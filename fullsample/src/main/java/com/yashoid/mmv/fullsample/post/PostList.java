@@ -6,6 +6,7 @@ import com.yashoid.mmv.Action;
 import com.yashoid.mmv.Managers;
 import com.yashoid.mmv.Model;
 import com.yashoid.mmv.ModelFeatures;
+import com.yashoid.mmv.PersistentTarget;
 import com.yashoid.mmv.TypeProvider;
 import com.yashoid.mmv.fullsample.Basics;
 import com.yashoid.mmv.fullsample.Stateful;
@@ -45,8 +46,6 @@ public interface PostList extends Stateful {
 
         class GetPostsAction implements Action {
 
-            private List<Target> performingActions = new ArrayList<>();
-
             @Override
             public Object perform(final Model model, Object... params) {
                 model.set(STATUS, STATUS_LOADING);
@@ -56,13 +55,11 @@ public interface PostList extends Stateful {
                         .add(Person.ID, model.get(PERSON_ID))
                         .build();
 
-                Target performingAction = new Target() {
+                Managers.registerTarget(new PersistentTarget() {
 
                     @Override
                     public void setModel(final Model personModel) {
                         Managers.unregisterTarget(this, personModel);
-
-                        performingActions.remove(this);
 
                         new Handler().postDelayed(new Runnable() {
 
@@ -107,11 +104,7 @@ public interface PostList extends Stateful {
                     @Override
                     public void onFeaturesChanged(String... featureNames) { }
 
-                };
-
-                performingActions.add(performingAction);
-
-                Managers.registerTarget(performingAction, personFeatures);
+                }, personFeatures);
 
                 return null;
             }

@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import com.yashoid.mmv.Managers;
 import com.yashoid.mmv.Model;
 import com.yashoid.mmv.ModelFeatures;
+import com.yashoid.mmv.PersistentTarget;
 import com.yashoid.mmv.fullsample.Basics;
 import com.yashoid.mmv.fullsample.MainFlow;
 import com.yashoid.mmv.fullsample.R;
@@ -45,12 +46,25 @@ public class PersonListFragment extends Fragment implements PersonList, Target {
                 .add(Basics.TYPE, TYPE)
                 .build();
 
-        ModelFeatures mainFlowFeatures = new ModelFeatures.Builder()
+        final ModelFeatures mainFlowFeatures = new ModelFeatures.Builder()
                 .add(Basics.TYPE, MainFlow.TYPE)
                 .build();
 
         Managers.registerTarget(this, features);
-        Managers.registerTarget(mMainFlowTarget, mainFlowFeatures);
+
+        Managers.registerTarget(new PersistentTarget() {
+
+            @Override
+            public void setModel(Model model) {
+                mMainFlowModel = model;
+
+                Managers.unregisterTarget(this, model);
+            }
+
+            @Override
+            public void onFeaturesChanged(String... featureNames) { }
+
+        }, mainFlowFeatures);
     }
 
     @Override
@@ -115,19 +129,5 @@ public class PersonListFragment extends Fragment implements PersonList, Target {
                 break;
         }
     }
-
-    private Target mMainFlowTarget = new Target() {
-
-        @Override
-        public void setModel(Model model) {
-            mMainFlowModel = model;
-        }
-
-        @Override
-        public void onFeaturesChanged(String... featureNames) {
-
-        }
-
-    };
 
 }

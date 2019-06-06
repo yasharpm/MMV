@@ -12,6 +12,7 @@ public class TargetManager {
     private Model mModel;
 
     private List<WeakReference<Target>> mTargets = new ArrayList<>();
+    private List<Target> mPersistentTargets = new ArrayList<>();
 
     protected TargetManager(Managers managers, ModelFeatures modelFeatures) {
         mManagers = managers;
@@ -56,7 +57,8 @@ public class TargetManager {
 
                 unregisterAll();
 
-                contestingTargetManager.registerAll(mTargets);
+                contestingTargetManager.registerTargets(mTargets);
+                contestingTargetManager.registerPersistentTargets(mPersistentTargets);
 
                 removeSelfFromManagers();
 
@@ -71,13 +73,20 @@ public class TargetManager {
     };
 
     protected void register(Target target) {
-        mTargets.add(new WeakReference<>(target));
+        if (target instanceof PersistentTarget) {
+            mPersistentTargets.add(target);
+        }
+        else {
+            mTargets.add(new WeakReference<>(target));
+        }
 
         target.setModel(mModel);
     }
 
-    private void registerAll(List<WeakReference<Target>> targets) {
+    private void registerTargets(List<WeakReference<Target>> targets) {
         ListIterator<WeakReference<Target>> targetIterator = targets.listIterator();
+
+        List<Target> existingTargets = new ArrayList<>(targets.size());
 
         while (targetIterator.hasNext()) {
             WeakReference<Target> targetReference = targetIterator.next();
@@ -87,18 +96,35 @@ public class TargetManager {
                 targetIterator.remove();
             }
             else {
-                target.setModel(mModel);
+                existingTargets.add(target);
             }
         }
 
         mTargets.addAll(targets);
+
+        for (Target target: existingTargets) {
+            target.setModel(mModel);
+        }
+    }
+
+    private void registerPersistentTargets(List<Target> targets) {
+        mPersistentTargets.addAll(targets);
+
+        for (Target target: targets) {
+            target.setModel(mModel);
+        }
     }
 
     private void unregisterAll() {
         mTargets.clear();
+        mPersistentTargets.clear();
     }
 
     public void unregister(Target target) {
+        if (mPersistentTargets.remove(target)) {
+            return;
+        }
+
         ListIterator<WeakReference<Target>> targetIterator = mTargets.listIterator();
 
         while (targetIterator.hasNext()) {
@@ -117,7 +143,7 @@ public class TargetManager {
     }
 
     private void notifyTargets(String... featureNames) {
-        List<Target> targets = new ArrayList<>(mTargets.size());
+        List<Target> targets = new ArrayList<>(mTargets.size() + mPersistentTargets.size());
 
         ListIterator<WeakReference<Target>> targetIterator = mTargets.listIterator();
 
@@ -133,6 +159,8 @@ public class TargetManager {
                 targets.add(target);
             }
         }
+
+        targets.addAll(mPersistentTargets);
 
         for (Target target: targets) {
             target.onFeaturesChanged(featureNames);
