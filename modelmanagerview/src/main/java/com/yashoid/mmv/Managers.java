@@ -9,6 +9,30 @@ public class Managers {
 
     private static Managers mInstance = null;
 
+    public static void bindLifeCycle(Application application) {
+        getInstance()._bindLifeCycle(application);
+    }
+
+    public static void registerModel(ModelFeatures modelFeatures) {
+        getInstance()._registerModel(modelFeatures);
+    }
+
+    public static void registerTarget(Target target, ModelFeatures modelFeatures) {
+        getInstance()._registerTarget(target, modelFeatures);
+    }
+
+    public static void unregisterTarget(Target target, Model model) {
+        getInstance()._unregisterTarget(target, model);
+    }
+
+    public static void addTypeProvider(TypeProvider typeProvider) {
+        getInstance()._addTypeProvider(typeProvider);
+    }
+
+    public static void removeTypeProvider(TypeProvider typeProvider) {
+        getInstance()._removeTypeProvider(typeProvider);
+    }
+
     private static Managers getInstance() {
         if (mInstance == null) {
             mInstance = new Managers();
@@ -25,16 +49,8 @@ public class Managers {
 
     }
 
-    public static void bindLifeCycle(Application application) {
-        getInstance()._bindLifeCycle(application);
-    }
-
     private void _bindLifeCycle(Application application) {
         // TODO Bind to activities life cycles so the state would be restored.
-    }
-
-    public static void registerModel(ModelFeatures modelFeatures) {
-        getInstance()._registerModel(modelFeatures);
     }
 
     private TargetManager _registerModel(ModelFeatures modelFeatures) {
@@ -52,16 +68,8 @@ public class Managers {
         return manager;
     }
 
-    public static void registerTarget(Target target, ModelFeatures modelFeatures) {
-        getInstance()._registerTarget(target, modelFeatures);
-    }
-
     private void _registerTarget(Target target, ModelFeatures modelFeatures) {
         _registerModel(modelFeatures).register(target);
-    }
-
-    public static void unregisterTarget(Target target, Model model) {
-        getInstance()._unregisterTarget(target, model);
     }
 
     private void _unregisterTarget(Target target, Model model) {
@@ -72,16 +80,8 @@ public class Managers {
         }
     }
 
-    public static void addTypeProvider(TypeProvider typeProvider) {
-        getInstance()._addTypeProvider(typeProvider);
-    }
-
     private void _addTypeProvider(TypeProvider typeProvider) {
         mTypeProviders.add(typeProvider);
-    }
-
-    public static void removeTypeProvider(TypeProvider typeProvider) {
-        getInstance()._removeTypeProvider(typeProvider);
     }
 
     private void _removeTypeProvider(TypeProvider typeProvider) {
