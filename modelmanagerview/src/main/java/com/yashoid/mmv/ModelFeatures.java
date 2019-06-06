@@ -1,6 +1,9 @@
 package com.yashoid.mmv;
 
+import android.os.Handler;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,12 +32,16 @@ public class ModelFeatures {
 
     }
 
+    private Handler mHandler;
+
     private HashMap<String, Object> mFeatures = new HashMap<>();
 
     private List<OnFeatureChangedListener> mListeners = new ArrayList<>();
 
-    private ModelFeatures() {
+    private List<String> mChangedFeatureNames = new ArrayList<>();
 
+    private ModelFeatures() {
+        mHandler = new Handler();
     }
 
     public Map<String, Object> getAll() {
@@ -60,12 +67,28 @@ public class ModelFeatures {
     }
 
     private void notifyFeaturesChanged(String... featureNames) {
-        List<OnFeatureChangedListener> listeners = new ArrayList<>(mListeners);
+        mChangedFeatureNames.addAll(Arrays.asList(featureNames));
 
-        for (OnFeatureChangedListener listener: listeners) {
-            listener.onFeatureChanged(featureNames);
-        }
+        mHandler.removeCallbacks(mFeaturesChangedNotifier);
+        mHandler.post(mFeaturesChangedNotifier);
     }
+
+    private Runnable mFeaturesChangedNotifier = new Runnable() {
+
+        @Override
+        public void run() {
+            String[] featureNames = mChangedFeatureNames.toArray(new String[mChangedFeatureNames.size()]);
+
+            mChangedFeatureNames.clear();
+
+            List<OnFeatureChangedListener> listeners = new ArrayList<>(mListeners);
+
+            for (OnFeatureChangedListener listener: listeners) {
+                listener.onFeatureChanged(featureNames);
+            }
+        }
+
+    };
 
     protected boolean matchesWith(ModelFeatures features) {
         for (String name: mFeatures.keySet()) {
