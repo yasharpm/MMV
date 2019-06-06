@@ -4,16 +4,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.yashoid.mmv.Managers;
 import com.yashoid.mmv.Model;
 import com.yashoid.mmv.ModelFeatures;
-import com.yashoid.mmv.target.ActivityTarget;
+import com.yashoid.mmv.Target;
 
 import java.util.Map;
 
-public class MainActivity extends ActivityTarget implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, Target {
 
-    private Managers mManagers;
+    private Model mModel;
 
     private TextView mTextHello;
 
@@ -28,28 +30,32 @@ public class MainActivity extends ActivityTarget implements View.OnClickListener
         ModelFeatures features = new ModelFeatures.Builder()
                 .build();
 
-        mManagers = Managers.getInstance();
-        mManagers.registerTarget(this, features);
+        Managers.getInstance().registerTarget(this, features);
     }
 
     @Override
     public void onClick(View v) {
-        Model model = getModel();
-
-        model.perform("doTheThing");
+        mModel.perform("doTheThing");
     }
 
     @Override
-    protected void onModelChanged(String... featureNames) {
-        super.onModelChanged(featureNames);
+    public void setModel(Model model) {
+        mModel = model;
 
-        Model model = getModel();
+        onModelChanged();
+    }
 
+    @Override
+    public void onFeaturesChanged(String... featureNames) {
+        onModelChanged();
+    }
+
+    private void onModelChanged() {
         StringBuilder sb = new StringBuilder();
 
         sb.append("Object Start\n");
 
-        for (Map.Entry<String, Object> entry: model.getAllFeatures().entrySet()) {
+        for (Map.Entry<String, Object> entry: mModel.getAllFeatures().entrySet()) {
             sb.append(entry.getKey()).append(": ").append(entry.getValue()).append('\n');
         }
 

@@ -19,6 +19,8 @@ public class SampleApplication extends Application {
         managers.addTypeProvider(new Login.LoginType());
         managers.addTypeProvider(new PersonList.PersonListType());
         managers.addTypeProvider(new PostList.PostListType());
+
+
     }
 
 }

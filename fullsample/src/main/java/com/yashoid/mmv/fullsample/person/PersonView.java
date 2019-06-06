@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.yashoid.mmv.Model;
 import com.yashoid.mmv.fullsample.R;
-import com.yashoid.mmv.target.Target;
+import com.yashoid.mmv.Target;
 
 public class PersonView extends FrameLayout implements Target, Person {
 

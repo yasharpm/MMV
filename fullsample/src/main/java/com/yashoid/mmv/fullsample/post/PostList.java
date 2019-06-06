@@ -1,6 +1,5 @@
 package com.yashoid.mmv.fullsample.post;
 
-import android.content.Context;
 import android.os.Handler;
 
 import com.yashoid.mmv.Action;
@@ -11,7 +10,7 @@ import com.yashoid.mmv.TypeProvider;
 import com.yashoid.mmv.fullsample.Basics;
 import com.yashoid.mmv.fullsample.Stateful;
 import com.yashoid.mmv.fullsample.person.Person;
-import com.yashoid.mmv.target.Target;
+import com.yashoid.mmv.Target;
 
 import java.util.ArrayList;
 import java.util.Arrays;

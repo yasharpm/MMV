@@ -1,4 +1,4 @@
-package com.yashoid.mmv.target;
+package com.yashoid.mmv;
 
 import com.yashoid.mmv.Model;
 

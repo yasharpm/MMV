@@ -1,7 +1,5 @@
 package com.yashoid.mmv;
 
-import com.yashoid.mmv.target.Target;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +20,7 @@ public class Managers {
     private List<TypeProvider> mTypeProviders = new ArrayList<>();
 
     private Managers() {
-        
+
     }
 
     public void registerTarget(Target target, ModelFeatures modelFeatures) {

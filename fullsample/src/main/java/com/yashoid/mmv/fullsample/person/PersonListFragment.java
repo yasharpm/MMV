@@ -16,7 +16,7 @@ import com.yashoid.mmv.ModelFeatures;
 import com.yashoid.mmv.fullsample.Basics;
 import com.yashoid.mmv.fullsample.MainFlow;
 import com.yashoid.mmv.fullsample.R;
-import com.yashoid.mmv.target.Target;
+import com.yashoid.mmv.Target;
 
 import java.util.List;
 

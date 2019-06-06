@@ -1,7 +1,5 @@
 package com.yashoid.mmv;
 
-import com.yashoid.mmv.target.Target;
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
