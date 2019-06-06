@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.yashoid.sequencelayout.SequenceLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:sequences="@xml/sequences_main"
+
+    android:background="#eee">
+
+    <fragment
+        android:id="@+id/fragment_personlist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:name="com.yashoid.mmv.fullsample.person.PersonListFragment" />
+
+    <fragment
+        android:id="@+id/fragment_postlist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:name="com.yashoid.mmv.fullsample.post.PostListFragment"/>
+
+</com.yashoid.sequencelayout.SequenceLayout>

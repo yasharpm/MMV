@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sequences>
+
+    <Vertical>
+        <Span id="fragment_personlist" size="wrap"/>
+        <Span id="fragment_postlist" size="1w"/>
+    </Vertical>
+
+    <Horizontal>
+        <Span id="fragment_personlist" size="100%"/>
+    </Horizontal>
+
+    <Horizontal>
+        <Span id="fragment_postlist" size="100%"/>
+    </Horizontal>
+
+</Sequences>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sequences>
+
+    <Vertical>
+        <Span size="0dp"/>
+        <Span id="image_photo" size="48dp"/>
+        <Span size="4dp"/>
+        <Span id="text_name" size="wrap"/>
+        <Span size="0dp"/>
+        <Span id="text_points" size="wrap"/>
+    </Vertical>
+
+    <Horizontal>
+        <Span id="helper" size="96dp"/> <!-- size="@MAX(110%image_photo,110%text_name,110%text_points)" -->
+    </Horizontal>
+
+    <Horizontal start="start@helper" end="end@helper">
+        <Span size="1w"/>
+        <Span id="image_photo" size="48dp"/>
+        <Span size="1w"/>
+    </Horizontal>
+
+    <Horizontal start="start@helper" end="end@helper">
+        <Span size="1w"/>
+        <Span id="text_name" size="wrap"/>
+        <Span size="1w"/>
+    </Horizontal>
+
+    <Horizontal start="start@helper" end="end@helper">
+        <Span size="1w"/>
+        <Span id="text_points" size="wrap"/>
+        <Span size="1w"/>
+    </Horizontal>
+
+</Sequences>

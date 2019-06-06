@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sequences>
+
+    <Vertical>
+        <Span size="8dp"/>
+        <Span id="text_points" size="wrap"/>
+        <Span size="8dp"/>
+        <Span id="button_removepoints" size="36dp"/>
+    </Vertical>
+
+    <Vertical start="start@text_points" end="end@button_removepoints">
+        <Span size="1w"/>
+        <Span id="text_content" size="wrap"/>
+        <Span size="1w"/>
+    </Vertical>
+
+    <Vertical start="start@button_removepoints" end="end@button_removepoints">
+        <Span id="button_addpoints" size="100%"/>
+    </Vertical>
+
+    <Horizontal>
+        <Span size="8dp"/>
+        <Span id="text_content" size="1w"/>
+        <Span size="8dp"/>
+        <Span id="button_removepoints" size="48dp"/>
+        <Span id="button_addpoints" size="48dp"/>
+    </Horizontal>
+
+    <Horizontal start="start@button_removepoints" end="end@button_addpoints">
+        <Span id="text_points" size="100%"/>
+    </Horizontal>
+
+</Sequences>
