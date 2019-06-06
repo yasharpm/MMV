@@ -85,7 +85,7 @@ public interface Login extends Stateful {
                     @Override
                     public void run() {
                         if (Math.random() > 0.5f) {
-                            model.set(ERROR, "Random error!!");
+                            model.set(ERROR, "Random error!! Do it again.");
                             model.set(STATUS, STATUS_FAILED);
                         }
                         else {

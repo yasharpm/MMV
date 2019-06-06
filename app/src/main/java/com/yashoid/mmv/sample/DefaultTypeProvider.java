@@ -12,6 +12,10 @@ public class DefaultTypeProvider implements TypeProvider {
 
     @Override
     public List<Action> getActions(ModelFeatures features, String actionName, Object... params) {
+        if (Action.ACTION_MODEL_CREATED.equals(actionName)) {
+            return null;
+        }
+
         return Arrays.asList((Action) new DefaultAction());
     }
 
