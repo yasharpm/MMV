@@ -28,7 +28,7 @@ public class MainActivity extends ActivityTarget implements View.OnClickListener
         ModelFeatures features = new ModelFeatures.Builder()
                 .build();
 
-        mManagers = Util.getManagers(this);
+        mManagers = Managers.getInstance();
         mManagers.registerTarget(this, features);
     }
 

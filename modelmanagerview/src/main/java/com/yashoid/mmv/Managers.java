@@ -21,6 +21,10 @@ public class Managers {
 
     private List<TypeProvider> mTypeProviders = new ArrayList<>();
 
+    private Managers() {
+        
+    }
+
     public void registerTarget(Target target, ModelFeatures modelFeatures) {
         TargetManager manager = findTargetManager(modelFeatures, null);
 
