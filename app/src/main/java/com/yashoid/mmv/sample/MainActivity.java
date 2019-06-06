@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ModelFeatures features = new ModelFeatures.Builder()
                 .build();
 
-        Managers.getInstance().registerTarget(this, features);
+        Managers.registerTarget(this, features);
     }
 
     @Override

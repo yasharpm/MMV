@@ -49,10 +49,8 @@ public class PersonListFragment extends Fragment implements PersonList, Target {
                 .add(Basics.TYPE, MainFlow.TYPE)
                 .build();
 
-        Managers managers = Managers.getInstance();
-
-        managers.registerTarget(this, features);
-        managers.registerTarget(mMainFlowTarget, mainFlowFeatures);
+        Managers.registerTarget(this, features);
+        Managers.registerTarget(mMainFlowTarget, mainFlowFeatures);
     }
 
     @Override
@@ -101,7 +99,7 @@ public class PersonListFragment extends Fragment implements PersonList, Target {
 
                         person.set(Basics.TYPE, Person.TYPE);
 
-                        Managers.getInstance().registerTarget(personView, person);
+                        Managers.registerTarget(personView, person);
 
                         mHolderPersonList.addView(personView);
 

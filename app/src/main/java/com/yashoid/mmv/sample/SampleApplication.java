@@ -10,7 +10,7 @@ public class SampleApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Managers.getInstance().addTypeProvider(new DefaultTypeProvider());
+        Managers.addTypeProvider(new DefaultTypeProvider());
     }
 
 }

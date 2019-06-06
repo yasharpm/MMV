@@ -13,12 +13,10 @@ public class SampleApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Managers managers = Managers.getInstance();
-
-        managers.addTypeProvider(new LoggerType());
-        managers.addTypeProvider(new Login.LoginType());
-        managers.addTypeProvider(new PersonList.PersonListType());
-        managers.addTypeProvider(new PostList.PostListType());
+        Managers.addTypeProvider(new LoggerType());
+        Managers.addTypeProvider(new Login.LoginType());
+        Managers.addTypeProvider(new PersonList.PersonListType());
+        Managers.addTypeProvider(new PostList.PostListType());
 
 
     }

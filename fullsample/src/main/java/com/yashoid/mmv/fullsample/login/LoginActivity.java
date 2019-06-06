@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mButtonLogin.setOnClickListener(this);
 
         ModelFeatures features = new ModelFeatures.Builder().add(Basics.TYPE, TYPE).build();
-        Managers.getInstance().registerTarget(this, features);
+        Managers.registerTarget(this, features);
     }
 
     @Override

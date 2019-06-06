@@ -15,13 +15,11 @@ import java.util.List;
 public class PostListAdapter extends BaseAdapter {
 
     private Context mContext;
-    private Managers mManagers;
 
     private List<ModelFeatures> mPosts = new ArrayList<>();
 
     public PostListAdapter(Context context) {
         mContext = context;
-        mManagers = Managers.getInstance();
     }
 
     public void setPosts(List<ModelFeatures> posts) {
@@ -55,13 +53,13 @@ public class PostListAdapter extends BaseAdapter {
         }
         else {
             view = (PostView) convertView;
-            mManagers.unregisterTarget(view, view.getModel());
+            Managers.unregisterTarget(view, view.getModel());
         }
 
         ModelFeatures post = mPosts.get(position);
         post.set(Basics.TYPE, Post.TYPE);
 
-        mManagers.registerTarget(view, mPosts.get(position));
+        Managers.registerTarget(view, mPosts.get(position));
 
         return view;
     }

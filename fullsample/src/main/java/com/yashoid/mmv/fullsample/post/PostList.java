@@ -51,8 +51,6 @@ public interface PostList extends Stateful {
             public Object perform(final Model model, Object... params) {
                 model.set(STATUS, STATUS_LOADING);
 
-                Managers managers = Managers.getInstance();
-
                 ModelFeatures personFeatures = new ModelFeatures.Builder()
                         .add(Basics.TYPE, Person.TYPE)
                         .add(Person.ID, model.get(PERSON_ID))
@@ -62,8 +60,7 @@ public interface PostList extends Stateful {
 
                     @Override
                     public void setModel(final Model personModel) {
-                        Managers managers = Managers.getInstance();
-                        managers.unregisterTarget(this, personModel);
+                        Managers.unregisterTarget(this, personModel);
 
                         performingActions.remove(this);
 
@@ -114,7 +111,7 @@ public interface PostList extends Stateful {
 
                 performingActions.add(performingAction);
 
-                managers.registerTarget(performingAction, personFeatures);
+                Managers.registerTarget(performingAction, personFeatures);
 
                 return null;
             }

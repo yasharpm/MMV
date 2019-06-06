@@ -49,13 +49,11 @@ public class PostListFragment extends Fragment implements Target, PostList {
         mPostListAdapter = new PostListAdapter(getContext());
         mListPosts.setAdapter(mPostListAdapter);
 
-        Managers managers = Managers.getInstance();
-
         ModelFeatures mainFlowFeatures = new ModelFeatures.Builder()
                 .add(Basics.TYPE, MainFlow.TYPE)
                 .build();
 
-        managers.registerTarget(mMainFlowTarget, mainFlowFeatures);
+        Managers.registerTarget(mMainFlowTarget, mainFlowFeatures);
     }
 
     @Override
@@ -103,18 +101,16 @@ public class PostListFragment extends Fragment implements Target, PostList {
             return;
         }
 
-        Managers managers = Managers.getInstance();
-
         ModelFeatures postListFeatures = new ModelFeatures.Builder()
                 .add(Basics.TYPE, TYPE)
                 .add(PERSON_ID, personId)
                 .build();
 
         if (mPostListModel != null) {
-            managers.unregisterTarget(this, mPostListModel);
+            Managers.unregisterTarget(this, mPostListModel);
         }
 
-        managers.registerTarget(this, postListFeatures);
+        Managers.registerTarget(this, postListFeatures);
     }
 
     private Target mMainFlowTarget = new Target() {

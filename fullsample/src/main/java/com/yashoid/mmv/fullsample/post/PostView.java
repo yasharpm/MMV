@@ -108,7 +108,7 @@ public class PostView extends FrameLayout implements View.OnClickListener, Targe
                     model.set(Person.POINTS, personPoints + finalPointChange);
                 }
 
-                Managers.getInstance().unregisterTarget(this, model);
+                Managers.unregisterTarget(this, model);
 
                 mPersonPointsChangingTarget = null;
             }
@@ -117,7 +117,7 @@ public class PostView extends FrameLayout implements View.OnClickListener, Targe
 
         };
 
-        Managers.getInstance().registerTarget(mPersonPointsChangingTarget, personFeatures);
+        Managers.registerTarget(mPersonPointsChangingTarget, personFeatures);
     }
 
     @Override

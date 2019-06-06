@@ -7,7 +7,7 @@ public class Managers {
 
     private static Managers mInstance = null;
 
-    public static Managers getInstance() {
+    private static Managers getInstance() {
         if (mInstance == null) {
             mInstance = new Managers();
         }
@@ -23,7 +23,11 @@ public class Managers {
 
     }
 
-    public void registerTarget(Target target, ModelFeatures modelFeatures) {
+    public static void registerTarget(Target target, ModelFeatures modelFeatures) {
+        getInstance()._registerTarget(target, modelFeatures);
+    }
+
+    private void _registerTarget(Target target, ModelFeatures modelFeatures) {
         TargetManager manager = findTargetManager(modelFeatures, null);
 
         if (manager == null) {
@@ -36,7 +40,11 @@ public class Managers {
         manager.register(target);
     }
 
-    public void unregisterTarget(Target target, Model model) {
+    public static void unregisterTarget(Target target, Model model) {
+        getInstance()._unregisterTarget(target, model);
+    }
+
+    private void _unregisterTarget(Target target, Model model) {
         TargetManager manager = findTargetManager(model.getFeatures(), null);
 
         if (manager != null) {
@@ -44,11 +52,19 @@ public class Managers {
         }
     }
 
-    public void addTypeProvider(TypeProvider typeProvider) {
+    public static void addTypeProvider(TypeProvider typeProvider) {
+        getInstance()._addTypeProvider(typeProvider);
+    }
+
+    private void _addTypeProvider(TypeProvider typeProvider) {
         mTypeProviders.add(typeProvider);
     }
 
-    public void removeTypeProvider(TypeProvider typeProvider) {
+    public static void removeTypeProvider(TypeProvider typeProvider) {
+        getInstance()._removeTypeProvider(typeProvider);
+    }
+
+    private void _removeTypeProvider(TypeProvider typeProvider) {
         mTypeProviders.remove(typeProvider);
     }
 
@@ -105,7 +121,7 @@ public class Managers {
         }
     }
 
-    private class ManagerInfo {
+    private static class ManagerInfo {
 
         private ModelFeatures modelFeatures;
 
