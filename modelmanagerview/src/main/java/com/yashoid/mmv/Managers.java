@@ -1,5 +1,7 @@
 package com.yashoid.mmv;
 
+import android.app.Application;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,14 @@ public class Managers {
 
     private Managers() {
 
+    }
+
+    public static void bindLifeCycle(Application application) {
+        getInstance()._bindLifeCycle(application);
+    }
+
+    private void _bindLifeCycle(Application application) {
+        // TODO Bind to activities life cycles so the state would be restored.
     }
 
     public static void registerTarget(Target target, ModelFeatures modelFeatures) {
