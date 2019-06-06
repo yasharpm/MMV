@@ -32,6 +32,8 @@ public class Managers {
 
         if (manager == null) {
             manager = defineManager(modelFeatures);
+
+            manager.getModel().perform(Action.ACTION_MODEL_CREATED);
         }
         else {
             manager.getModel().getFeatures().updateWith(modelFeatures);
