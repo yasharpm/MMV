@@ -10,6 +10,8 @@ public class SampleApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        Managers.bindLifeCycle(this);
+
         Managers.addTypeProvider(new DefaultTypeProvider());
     }
 

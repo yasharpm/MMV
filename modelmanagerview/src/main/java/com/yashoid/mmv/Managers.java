@@ -33,11 +33,11 @@ public class Managers {
         // TODO Bind to activities life cycles so the state would be restored.
     }
 
-    public static void registerTarget(Target target, ModelFeatures modelFeatures) {
-        getInstance()._registerTarget(target, modelFeatures);
+    public static void registerModel(ModelFeatures modelFeatures) {
+        getInstance()._registerModel(modelFeatures);
     }
 
-    private void _registerTarget(Target target, ModelFeatures modelFeatures) {
+    private TargetManager _registerModel(ModelFeatures modelFeatures) {
         TargetManager manager = findTargetManager(modelFeatures, null);
 
         if (manager == null) {
@@ -49,7 +49,15 @@ public class Managers {
             manager.getModel().getFeatures().updateWith(modelFeatures);
         }
 
-        manager.register(target);
+        return manager;
+    }
+
+    public static void registerTarget(Target target, ModelFeatures modelFeatures) {
+        getInstance()._registerTarget(target, modelFeatures);
+    }
+
+    private void _registerTarget(Target target, ModelFeatures modelFeatures) {
+        _registerModel(modelFeatures).register(target);
     }
 
     public static void unregisterTarget(Target target, Model model) {

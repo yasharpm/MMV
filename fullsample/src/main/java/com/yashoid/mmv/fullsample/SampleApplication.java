@@ -13,6 +13,8 @@ public class SampleApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        Managers.bindLifeCycle(this);
+
         Managers.addTypeProvider(new LoggerType());
         Managers.addTypeProvider(new Login.LoginType());
         Managers.addTypeProvider(new PersonList.PersonListType());
