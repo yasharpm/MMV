@@ -107,7 +107,7 @@ public class PostListFragment extends Fragment implements Target, PostList {
                 .build();
 
         if (mPostListModel != null) {
-            Managers.unregisterTarget(this, mPostListModel);
+            Managers.unregisterTarget(this);
         }
 
         Managers.registerTarget(this, postListFeatures);

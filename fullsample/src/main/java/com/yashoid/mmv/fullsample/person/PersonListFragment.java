@@ -58,7 +58,7 @@ public class PersonListFragment extends Fragment implements PersonList, Target {
             public void setModel(Model model) {
                 mMainFlowModel = model;
 
-                Managers.unregisterTarget(this, model);
+                Managers.unregisterTarget(this);
             }
 
             @Override

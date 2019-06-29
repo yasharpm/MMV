@@ -21,8 +21,8 @@ public class Managers {
         getInstance()._registerTarget(target, modelFeatures);
     }
 
-    public static void unregisterTarget(Target target, Model model) {
-        getInstance()._unregisterTarget(target, model);
+    public static void unregisterTarget(Target target) {
+        getInstance()._unregisterTarget(target);
     }
 
     public static void addTypeProvider(TypeProvider typeProvider) {
@@ -72,11 +72,11 @@ public class Managers {
         _registerModel(modelFeatures).register(target);
     }
 
-    private void _unregisterTarget(Target target, Model model) {
-        TargetManager manager = findTargetManager(model.getFeatures(), null);
-
-        if (manager != null) {
-            manager.unregister(target);
+    private void _unregisterTarget(Target target) {
+        for (ManagerInfo managerInfo: mManagersInfo) {
+            if (managerInfo.manager.unregister(target)) {
+                return;
+            }
         }
     }
 
@@ -92,10 +92,10 @@ public class Managers {
         List<Action> actions = new ArrayList<>();
 
         for (TypeProvider typeProvider: mTypeProviders) {
-            List<Action> typeActions = typeProvider.getActions(features, actionName, params);
+            Action typeAction = typeProvider.getAction(features, actionName, params);
 
-            if (typeActions != null) {
-                actions.addAll(typeActions);
+            if (typeAction != null) {
+                actions.add(typeAction);
             }
         }
 

@@ -14,7 +14,6 @@ import com.yashoid.mmv.fullsample.Basics;
 import com.yashoid.mmv.fullsample.Stateful;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public interface PersonList extends Stateful {
@@ -30,14 +29,14 @@ public interface PersonList extends Stateful {
         private Action getList = new GetListAction();
 
         @Override
-        public List<Action> getActions(ModelFeatures features, String actionName, Object... params) {
+        public Action getAction(ModelFeatures features, String actionName, Object... params) {
             if (!TYPE.equals(features.get(Basics.TYPE))) {
                 return null;
             }
 
             switch (actionName) {
                 case GET_LIST:
-                    return Arrays.asList(getList);
+                    return getList;
             }
 
             return null;

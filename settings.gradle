@@ -1,1 +1,1 @@
-include ':app', ':modelmanagerview', ':fullsample'
+include ':app', ':mmv', ':fullsample'

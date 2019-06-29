@@ -13,7 +13,6 @@ import com.yashoid.mmv.fullsample.Stateful;
 import com.yashoid.mmv.fullsample.person.Person;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public interface PostList extends Stateful {
@@ -30,14 +29,14 @@ public interface PostList extends Stateful {
         private Action getPosts = new GetPostsAction();
 
         @Override
-        public List<Action> getActions(ModelFeatures features, String actionName, Object... params) {
+        public Action getAction(ModelFeatures features, String actionName, Object... params) {
             if (!TYPE.equals(features.get(Basics.TYPE))) {
                 return null;
             }
 
             switch (actionName) {
                 case GET_POSTS:
-                    return Arrays.asList(getPosts);
+                    return getPosts;
             }
 
             return null;
@@ -58,7 +57,7 @@ public interface PostList extends Stateful {
 
                     @Override
                     public void setModel(final Model personModel) {
-                        Managers.unregisterTarget(this, personModel);
+                        Managers.unregisterTarget(this);
 
                         new Handler().postDelayed(new Runnable() {
 

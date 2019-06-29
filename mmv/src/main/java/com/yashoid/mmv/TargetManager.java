@@ -120,9 +120,9 @@ public class TargetManager {
         mPersistentTargets.clear();
     }
 
-    public void unregister(Target target) {
+    public boolean unregister(Target target) {
         if (mPersistentTargets.remove(target)) {
-            return;
+            return true;
         }
 
         ListIterator<WeakReference<Target>> targetIterator = mTargets.listIterator();
@@ -132,10 +132,17 @@ public class TargetManager {
 
             Target t = targetReference.get();
 
-            if (t == null || target == t) {
+            if (t == null) {
                 targetIterator.remove();
             }
+            else if (t == target) {
+                targetIterator.remove();
+
+                return true;
+            }
         }
+
+        return false;
     }
 
     private TargetManager findTargetManagerForSameModel() {

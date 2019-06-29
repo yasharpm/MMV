@@ -53,7 +53,7 @@ public class PostListAdapter extends BaseAdapter {
         }
         else {
             view = (PostView) convertView;
-            Managers.unregisterTarget(view, view.getModel());
+            Managers.unregisterTarget(view);
         }
 
         ModelFeatures post = mPosts.get(position);

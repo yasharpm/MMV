@@ -56,10 +56,6 @@ public class PostView extends FrameLayout implements View.OnClickListener, Targe
         mButtonRemovePoints.setOnClickListener(this);
     }
 
-    public Model getModel() {
-        return mModel;
-    }
-
     @Override
     public void onClick(View v) {
         if (mModel == null) {
@@ -108,7 +104,7 @@ public class PostView extends FrameLayout implements View.OnClickListener, Targe
                     model.set(Person.POINTS, personPoints + finalPointChange);
                 }
 
-                Managers.unregisterTarget(this, model);
+                Managers.unregisterTarget(this);
 
                 mPersonPointsChangingTarget = null;
             }

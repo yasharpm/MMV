@@ -10,9 +10,6 @@ import com.yashoid.mmv.TypeProvider;
 import com.yashoid.mmv.fullsample.Basics;
 import com.yashoid.mmv.fullsample.Stateful;
 
-import java.util.Arrays;
-import java.util.List;
-
 public interface Login extends Stateful {
 
     String TYPE = "Login";
@@ -31,18 +28,18 @@ public interface Login extends Stateful {
         private Action loginAction = new LoginAction();
 
         @Override
-        public List<Action> getActions(ModelFeatures features, String actionName, Object... params) {
+        public Action getAction(ModelFeatures features, String actionName, Object... params) {
             if (!features.get(Basics.TYPE).equals(TYPE)) {
                 return null;
             }
 
             switch (actionName) {
                 case USERNAME:
-                    return Arrays.asList(usernameAction);
+                    return usernameAction;
                 case PASSWORD:
-                    return Arrays.asList(passwordAction);
+                    return passwordAction;
                 case LOGIN:
-                    return Arrays.asList(loginAction);
+                    return loginAction;
             }
 
             return null;
