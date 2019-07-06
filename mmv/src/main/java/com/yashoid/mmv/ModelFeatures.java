@@ -1,6 +1,8 @@
 package com.yashoid.mmv;
 
 import android.os.Handler;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ModelFeatures {
+public class ModelFeatures implements Parcelable {
 
     public static class Builder {
 
@@ -42,6 +44,12 @@ public class ModelFeatures {
 
     private ModelFeatures() {
         mHandler = new Handler();
+    }
+
+    protected ModelFeatures(Parcel in) {
+        this();
+
+        in.readMap(mFeatures, getClass().getClassLoader());
     }
 
     public Map<String, Object> getAll() {
@@ -112,5 +120,29 @@ public class ModelFeatures {
             return master.equals(slave);
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeMap(mFeatures);
+    }
+
+    public static final Creator<ModelFeatures> CREATOR = new Creator<ModelFeatures>() {
+
+        @Override
+        public ModelFeatures createFromParcel(Parcel in) {
+            return new ModelFeatures(in);
+        }
+
+        @Override
+        public ModelFeatures[] newArray(int size) {
+            return new ModelFeatures[size];
+        }
+
+    };
 
 }
