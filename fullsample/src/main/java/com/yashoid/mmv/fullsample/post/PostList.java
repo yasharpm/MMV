@@ -42,6 +42,12 @@ public interface PostList extends Stateful {
             return null;
         }
 
+        @Override
+        public void getIdentifyingFeatures(ModelFeatures features, List<String> identifyingFeatures) {
+            identifyingFeatures.add(TYPE);
+            identifyingFeatures.add(PERSON_ID);
+        }
+
         class GetPostsAction implements Action {
 
             @Override

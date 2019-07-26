@@ -6,6 +6,8 @@ import com.yashoid.mmv.Managers;
 import com.yashoid.mmv.fullsample.login.Login;
 import com.yashoid.mmv.fullsample.person.PersonList;
 import com.yashoid.mmv.fullsample.post.PostList;
+import com.yashoid.office.task.TaskManager;
+import com.yashoid.office.task.TaskManagerBuilder;
 
 public class SampleApplication extends Application {
 
@@ -14,13 +16,19 @@ public class SampleApplication extends Application {
         super.onCreate();
 
         Managers.bindLifeCycle(this);
+        Managers.enableCache(this, createTaskManager());
 
         Managers.addTypeProvider(new LoggerType());
         Managers.addTypeProvider(new Login.LoginType());
         Managers.addTypeProvider(new PersonList.PersonListType());
         Managers.addTypeProvider(new PostList.PostListType());
+    }
 
-
+    private TaskManager createTaskManager() {
+        return new TaskManagerBuilder()
+                .addDatabaseReadSection(1)
+                .addDatabaseReadWriteSection(1)
+                .build();
     }
 
 }

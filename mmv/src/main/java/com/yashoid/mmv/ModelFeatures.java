@@ -74,7 +74,7 @@ public class ModelFeatures implements Parcelable {
         mListeners.remove(listener);
     }
 
-    private void notifyFeaturesChanged(String... featureNames) {
+    protected void notifyFeaturesChanged(String... featureNames) {
         mChangedFeatureNames.addAll(Arrays.asList(featureNames));
 
         mHandler.removeCallbacks(mFeaturesChangedNotifier);
@@ -98,9 +98,13 @@ public class ModelFeatures implements Parcelable {
 
     };
 
-    protected boolean matchesWith(ModelFeatures features) {
+    protected boolean matchesWith(ModelFeatures features, List<String> identifyingFeatures) {
         for (String name: mFeatures.keySet()) {
-            if (features.mFeatures.containsKey(name) && !featureValuesEquals(mFeatures.get(name), features.mFeatures.get(name))) {
+            if (!identifyingFeatures.contains(name)) {
+                continue;
+            }
+
+            if (!features.mFeatures.containsKey(name) || !featureValuesEquals(mFeatures.get(name), features.mFeatures.get(name))) {
                 return false;
             }
         }

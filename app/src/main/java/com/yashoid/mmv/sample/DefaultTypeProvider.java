@@ -5,6 +5,8 @@ import com.yashoid.mmv.Model;
 import com.yashoid.mmv.ModelFeatures;
 import com.yashoid.mmv.TypeProvider;
 
+import java.util.List;
+
 public class DefaultTypeProvider implements TypeProvider {
 
     @Override
@@ -16,11 +18,17 @@ public class DefaultTypeProvider implements TypeProvider {
         return new DefaultAction();
     }
 
+    @Override
+    public void getIdentifyingFeatures(ModelFeatures features, List<String> identifyingFeatures) {
+
+    }
+
     private class DefaultAction implements Action {
 
         @Override
         public Object perform(Model model, Object... params) {
             model.set("Hello", "World!");
+
             return null;
         }
 

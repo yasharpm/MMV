@@ -182,4 +182,8 @@ public class TargetManager {
         return mModel;
     }
 
+    protected void cache(boolean keep) {
+        mManagers.cache(mModel.getFeatures(), keep);
+    }
+
 }

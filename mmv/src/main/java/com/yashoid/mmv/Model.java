@@ -34,6 +34,10 @@ public class Model {
         return mManager.perform(action, params);
     }
 
+    public void cache(boolean keep) {
+        mManager.cache(keep);
+    }
+
     protected void mergeWith(Model model) {
          mFeatures.updateWith(model.mFeatures);
     }

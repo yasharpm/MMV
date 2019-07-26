@@ -1,6 +1,11 @@
 package com.yashoid.mmv;
 
 import android.app.Application;
+import android.content.Context;
+
+import com.yashoid.mmv.cache.GetModelCallback;
+import com.yashoid.mmv.cache.ModelCache;
+import com.yashoid.office.task.TaskManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +16,10 @@ public class Managers {
 
     public static void bindLifeCycle(Application application) {
         getInstance()._bindLifeCycle(application);
+    }
+
+    public static void enableCache(Context context, TaskManager taskManager) {
+        getInstance()._enableCache(context, taskManager);
     }
 
     public static void registerModel(ModelFeatures modelFeatures) {
@@ -45,12 +54,22 @@ public class Managers {
 
     private List<TypeProvider> mTypeProviders = new ArrayList<>();
 
+    private ModelCache mModelCache = null;
+
     private Managers() {
 
     }
 
     private void _bindLifeCycle(Application application) {
         // TODO Bind to activities life cycles so the state would be restored.
+    }
+
+    private void _enableCache(Context context, TaskManager taskManager) {
+        if (mModelCache != null) {
+            throw new RuntimeException("Cache has already been enabled on Managers.");
+        }
+
+        mModelCache = new ModelCache(context, taskManager);
     }
 
     private TargetManager _registerModel(ModelFeatures modelFeatures) {
@@ -60,6 +79,8 @@ public class Managers {
             manager = defineManager(modelFeatures);
 
             manager.getModel().perform(Action.ACTION_MODEL_CREATED);
+
+            updateModelFromCache(manager.getModel());
         }
         else {
             manager.getModel().getFeatures().updateWith(modelFeatures);
@@ -103,17 +124,29 @@ public class Managers {
     }
 
     protected TargetManager findTargetManager(ModelFeatures modelFeatures, TargetManager exception) {
+        List<String> identifyingFeatures = getIdentifyingFeatures(modelFeatures);
+
         for (ManagerInfo managerInfo: mManagersInfo) {
             if (managerInfo.manager == exception) {
                 continue;
             }
 
-            if (managerInfo.modelFeatures.matchesWith(modelFeatures)) {
+            if (managerInfo.modelFeatures.matchesWith(modelFeatures, identifyingFeatures)) {
                 return managerInfo.manager;
             }
         }
 
         return null;
+    }
+
+    private List<String> getIdentifyingFeatures(ModelFeatures modelFeatures) {
+        List<String> identifyingFeatures = new ArrayList<>();
+
+        for (TypeProvider typeProvider: mTypeProviders) {
+            typeProvider.getIdentifyingFeatures(modelFeatures, identifyingFeatures);
+        }
+
+        return identifyingFeatures;
     }
 
     private TargetManager defineManager(ModelFeatures features) {
@@ -124,6 +157,31 @@ public class Managers {
         mManagersInfo.add(managerInfo);
 
         return targetManager;
+    }
+
+    private void updateModelFromCache(final Model model) {
+        if (mModelCache == null) {
+            return;
+        }
+
+        List<String> identifyingFeatures = getIdentifyingFeatures(model.getFeatures());
+
+        mModelCache.get(model.getFeatures(), identifyingFeatures, new GetModelCallback() {
+
+            @Override
+            public void onGetModelResult(ModelFeatures modelFeatures) {
+                if (modelFeatures == null) {
+                    return;
+                }
+
+                model.getFeatures().updateWith(modelFeatures);
+
+                model.perform(Action.ACTION_MODEL_LOADED_FROM_CACHE);
+
+                model.getFeatures().notifyFeaturesChanged(modelFeatures.getAll().keySet().toArray(new String[0]));
+            }
+
+        });
     }
 
     protected void removeManager(TargetManager manager) {
@@ -138,6 +196,21 @@ public class Managers {
 
         if (managerToRemove != null) {
             mManagersInfo.remove(managerToRemove);
+        }
+    }
+
+    protected void cache(ModelFeatures modelFeatures, boolean keep) {
+        if (mModelCache == null) {
+            return;
+        }
+
+        List<String> identifyingFeatures = getIdentifyingFeatures(modelFeatures);
+
+        if (keep) {
+            mModelCache.put(modelFeatures, identifyingFeatures);
+        }
+        else {
+            mModelCache.remove(modelFeatures, identifyingFeatures);
         }
     }
 
