@@ -83,6 +83,7 @@ public class PostView extends FrameLayout implements View.OnClickListener, Targe
         }
 
         mModel.set(POINTS, points);
+        mModel.cache(true);
 
         if (pointChange == 0) {
             return;
@@ -102,6 +103,7 @@ public class PostView extends FrameLayout implements View.OnClickListener, Targe
 
                 if (personPoints != null) {
                     model.set(Person.POINTS, personPoints + finalPointChange);
+                    model.cache(true);
                 }
 
                 Managers.unregisterTarget(this);

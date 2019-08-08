@@ -49,14 +49,18 @@ public class ColumnNameMap implements ModelCacheColumns {
         int index = mIdentifiers.indexOf(identifier);
 
         if (index < 0) {
-            mIdentifiers.add(identifier);
-
-            update();
-
-            return DATA + (mIdentifiers.size() - 1);
+            return null;
         }
 
-        return DATA + identifier;
+        return DATA + index;
+    }
+
+    protected synchronized String defineNewColumn(String identifier) {
+        mIdentifiers.add(identifier);
+
+        update();
+
+        return DATA + (mIdentifiers.size() - 1);
     }
 
     private void update() {

@@ -10,6 +10,8 @@ import com.yashoid.mmv.TypeProvider;
 import com.yashoid.mmv.fullsample.Basics;
 import com.yashoid.mmv.fullsample.Stateful;
 
+import java.util.List;
+
 public interface Login extends Stateful {
 
     String TYPE = "Login";
@@ -43,6 +45,13 @@ public interface Login extends Stateful {
             }
 
             return null;
+        }
+
+        @Override
+        public void getIdentifyingFeatures(ModelFeatures features, List<String> identifyingFeatures) {
+            if (TYPE.equals(features.get(Basics.TYPE))) {
+                identifyingFeatures.add(Basics.TYPE);
+            }
         }
 
         class UsernameAction implements Action {
@@ -81,7 +90,7 @@ public interface Login extends Stateful {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (Math.random() > 0.5f) {
+                        if (Math.random() > 0.7f) {
                             model.set(ERROR, "Random error!! Do it again.");
                             model.set(STATUS, STATUS_FAILED);
                         }

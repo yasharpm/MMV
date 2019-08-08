@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,6 +17,8 @@ import java.util.Map;
 
 public class ModelDatabase implements ModelCacheColumns {
 
+    private static final String TAG = "ModelDatabase";
+
     private ModelDbOpenHelper mDbOpenHelper;
     private ColumnNameMap mColumnNameMap;
 
@@ -25,21 +28,49 @@ public class ModelDatabase implements ModelCacheColumns {
     }
 
     protected void addModel(HashMap<String, String> identifiers, Map<String, Object> features) {
+        SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
+
         ContentValues cv = new ContentValues(identifiers.size() + 1);
 
         for (Map.Entry<String, String> identifier: identifiers.entrySet()) {
-            cv.put(mColumnNameMap.getColumnName(identifier.getKey()), identifier.getValue());
+            String columnName = getColumnName(identifier.getKey(), db);
+            cv.put(columnName, identifier.getValue());
         }
 
         cv.put(FEATURES, ValueMapper.fromValue(features).toString());
 
-        SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
 
         db.insert(TABLE_NAME, null, cv);
     }
 
+    private String getColumnName(String identifier, SQLiteDatabase db) {
+        String columnName = mColumnNameMap.getColumnName(identifier);
+
+        if (columnName == null) {
+            columnName = mColumnNameMap.defineNewColumn(identifier);
+
+            addColumn(columnName, db);
+        }
+
+        return columnName;
+    }
+
+    private void addColumn(String columnName, SQLiteDatabase db) {
+        String sql = new StringBuilder()
+                .append("ALTER TABLE ")
+                .append(TABLE_NAME)
+                .append(" ADD ")
+                .append(columnName)
+                .append(" TEXT")
+                .toString();
+
+        db.execSQL(sql);
+    }
+
     protected void updateModel(HashMap<String, String> identifiers, Map<String, Object> features) {
-        SelectionInfo selectionInfo = new SelectionInfo(identifiers);
+        SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
+
+        SelectionInfo selectionInfo = new SelectionInfo(identifiers, db);
 
         if (selectionInfo.selection == null) {
             return;
@@ -47,8 +78,6 @@ public class ModelDatabase implements ModelCacheColumns {
 
         ContentValues cv = new ContentValues(1);
         cv.put(FEATURES, ValueMapper.fromValue(features).toString());
-
-        SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
 
         db.update(TABLE_NAME, cv, selectionInfo.selection, selectionInfo.selectionArgs);
     }
@@ -66,18 +95,21 @@ public class ModelDatabase implements ModelCacheColumns {
     }
 
     protected void deleteModel(HashMap<String, String> identifiers) {
-        SelectionInfo selectionInfo = new SelectionInfo(identifiers);
+        SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
+
+        SelectionInfo selectionInfo = new SelectionInfo(identifiers, db);
 
         if (selectionInfo.selection == null) {
             return;
         }
 
-        SQLiteDatabase db = mDbOpenHelper.getWritableDatabase();
-
         db.delete(TABLE_NAME, selectionInfo.selection, selectionInfo.selectionArgs);
     }
 
     protected HashMap<String, Object> queryModel(HashMap<String, String> identifiers) {
+        if ("3".equals(identifiers.get("id"))) {
+            Log.d("AAA", "About to get Ramin!");
+        }
         Cursor cursor = getCursor(identifiers);
 
         if (cursor == null) {
@@ -94,7 +126,13 @@ public class ModelDatabase implements ModelCacheColumns {
             throw new RuntimeException("Features is not in JSON format.");
         }
 
-        HashMap<String, Object> model = convertModel(identifiers, jFeatures);
+        HashMap<String, Object> model = null;
+
+        try {
+            model = convertModel(identifiers, jFeatures);
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to convert query result to model.", e);
+        }
 
         cursor.close();
 
@@ -104,7 +142,7 @@ public class ModelDatabase implements ModelCacheColumns {
     private Cursor getCursor(HashMap<String, String> identifiers) {
         SQLiteDatabase db = mDbOpenHelper.getReadableDatabase();
 
-        SelectionInfo selectionInfo = new SelectionInfo(identifiers);
+        SelectionInfo selectionInfo = new SelectionInfo(identifiers, db);
 
         String selection = selectionInfo.selection;
         String[] selectionArgs = selectionInfo.selectionArgs;
@@ -124,7 +162,7 @@ public class ModelDatabase implements ModelCacheColumns {
         return cursor;
     }
 
-    private HashMap<String, Object> convertModel(HashMap<String, String> identifiers, JSONObject jFeatures) {
+    private HashMap<String, Object> convertModel(HashMap<String, String> identifiers, JSONObject jFeatures) throws JSONException {
         HashMap<String, Object> model = new HashMap<>(identifiers.size() + jFeatures.length());
 
         for (Map.Entry<String, String> identifier: identifiers.entrySet()) {
@@ -144,7 +182,7 @@ public class ModelDatabase implements ModelCacheColumns {
         return model;
     }
 
-    private Object convertValue(Object rawValue) {
+    private Object convertValue(Object rawValue) throws JSONException {
         return ValueMapper.toValue(rawValue);
     }
 
@@ -153,7 +191,7 @@ public class ModelDatabase implements ModelCacheColumns {
         private String selection = null;
         private String[] selectionArgs = null;
 
-        protected SelectionInfo(HashMap<String, String> identifiers) {
+        protected SelectionInfo(HashMap<String, String> identifiers, SQLiteDatabase db) {
             Iterator<Map.Entry<String, String>> identifierIterator = identifiers.entrySet().iterator();
 
             StringBuilder selectionBuilder = new StringBuilder();
@@ -162,7 +200,7 @@ public class ModelDatabase implements ModelCacheColumns {
             while (identifierIterator.hasNext()) {
                 Map.Entry<String, String> identifier = identifierIterator.next();
 
-                String columnName = mColumnNameMap.getColumnName(identifier.getKey());
+                String columnName = getColumnName(identifier.getKey(), db);
 
                 if (columnName == null) {
                     return;

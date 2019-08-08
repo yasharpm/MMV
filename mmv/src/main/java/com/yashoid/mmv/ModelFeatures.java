@@ -1,8 +1,11 @@
 package com.yashoid.mmv;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,22 +17,26 @@ public class ModelFeatures implements Parcelable {
 
     public static class Builder {
 
-        private ModelFeatures mFeatures = new ModelFeatures();
+        private Map<String, Object> mFeatures = new HashMap<>();
 
         public Builder add(String name, Object value) {
-            mFeatures.mFeatures.put(name, value);
+            mFeatures.put(name, value);
 
             return this;
         }
 
         public Builder addAll(Map<String, Object> features) {
-            mFeatures.mFeatures.putAll(features);
+            mFeatures.putAll(features);
 
             return this;
         }
 
         public ModelFeatures build() {
-            return mFeatures;
+            ModelFeatures modelFeatures = new ModelFeatures();
+
+            modelFeatures.mFeatures.putAll(mFeatures);
+
+            return modelFeatures;
         }
 
     }
@@ -43,7 +50,7 @@ public class ModelFeatures implements Parcelable {
     private List<String> mChangedFeatureNames = new ArrayList<>();
 
     private ModelFeatures() {
-        mHandler = new Handler();
+        mHandler = new Handler(Looper.getMainLooper());
     }
 
     protected ModelFeatures(Parcel in) {
@@ -118,11 +125,17 @@ public class ModelFeatures implements Parcelable {
 
     private static boolean featureValuesEquals(Object master, Object slave) {
         if (master == null) {
-            return true;
+            return slave == null;
         }
         else {
             return master.equals(slave);
         }
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return Arrays.toString(mFeatures.entrySet().toArray());
     }
 
     @Override

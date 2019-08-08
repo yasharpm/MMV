@@ -5,6 +5,7 @@ import com.yashoid.office.AsyncOperation;
 import com.yashoid.office.task.TaskManager;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class PutTask extends AsyncOperation {
 
@@ -13,7 +14,7 @@ public class PutTask extends AsyncOperation {
     private ModelDatabase mDatabase;
 
     private final HashMap<String, String> mQueryFeatures;
-    private final ModelFeatures mModelFeatures;
+    private final Map<String, Object> mModelFeatures;
 
 
     protected PutTask(HashMap<String, String> queryFeatures, ModelFeatures modelFeatures, ModelCache modelCache) {
@@ -24,7 +25,7 @@ public class PutTask extends AsyncOperation {
         mModelCache = modelCache;
 
         mQueryFeatures = queryFeatures;
-        mModelFeatures = modelFeatures;
+        mModelFeatures = new HashMap<>(modelFeatures.getAll());
     }
 
     @Override
@@ -32,10 +33,10 @@ public class PutTask extends AsyncOperation {
         boolean modelExists = mDatabase.modelExists(mQueryFeatures);
 
         if (modelExists) {
-            mDatabase.updateModel(mQueryFeatures, mModelFeatures.getAll());
+            mDatabase.updateModel(mQueryFeatures, mModelFeatures);
         }
         else {
-            mDatabase.addModel(mQueryFeatures, mModelFeatures.getAll());
+            mDatabase.addModel(mQueryFeatures, mModelFeatures);
         }
     }
 

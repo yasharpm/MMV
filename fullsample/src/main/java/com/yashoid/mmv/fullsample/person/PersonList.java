@@ -35,12 +35,36 @@ public interface PersonList extends Stateful {
             }
 
             switch (actionName) {
+                case Action.ACTION_MODEL_LOADED_FROM_CACHE:
+                    return reloadedAction;
                 case GET_LIST:
                     return getList;
             }
 
             return null;
         }
+
+        @Override
+        public void getIdentifyingFeatures(ModelFeatures features, List<String> identifyingFeatures) {
+            if (TYPE.equals(features.get(Basics.TYPE))) {
+                identifyingFeatures.add(Basics.TYPE);
+            }
+        }
+
+        private Action reloadedAction = new Action() {
+
+            @Override
+            public Object perform(Model model, Object... params) {
+                List<ModelFeatures> personList = model.get(PERSON_LIST);
+
+                for (ModelFeatures personFeatures: personList) {
+                    personFeatures.set(Person.PHOTO, createBitmap((String) personFeatures.get(Person.NAME)));
+                }
+
+                return null;
+            }
+
+        };
 
         class GetListAction implements Action {
 
@@ -77,8 +101,13 @@ public interface PersonList extends Stateful {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        if ((int) model.get(STATUS) == STATUS_SUCCESS) {
+                            return;
+                        }
+
                         model.set(PERSON_LIST, personList);
                         model.set(STATUS, STATUS_SUCCESS);
+                        model.cache(true);
                     }
                 }, 2000);
 
@@ -87,7 +116,7 @@ public interface PersonList extends Stateful {
 
         }
 
-        private static Bitmap createBitmap(String seed) {
+        public static Bitmap createBitmap(String seed) {
             Bitmap bitmap = Bitmap.createBitmap(128, 128, Bitmap.Config.ARGB_8888);
 
             Canvas canvas = new Canvas(bitmap);

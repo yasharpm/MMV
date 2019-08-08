@@ -44,8 +44,10 @@ public interface PostList extends Stateful {
 
         @Override
         public void getIdentifyingFeatures(ModelFeatures features, List<String> identifyingFeatures) {
-            identifyingFeatures.add(TYPE);
-            identifyingFeatures.add(PERSON_ID);
+            if (TYPE.equals(features.get(Basics.TYPE))) {
+                identifyingFeatures.add(Basics.TYPE);
+                identifyingFeatures.add(PERSON_ID);
+            }
         }
 
         class GetPostsAction implements Action {
@@ -69,6 +71,10 @@ public interface PostList extends Stateful {
 
                             @Override
                             public void run() {
+                                if ((int) model.get(STATUS) == STATUS_SUCCESS) {
+                                    return;
+                                }
+
                                 Integer personId = model.get(PERSON_ID);
                                 String personName = personModel.get(Person.NAME);
 
@@ -100,6 +106,8 @@ public interface PostList extends Stateful {
 
                                 model.set(POSTS, postsFeatures);
                                 model.set(STATUS, STATUS_SUCCESS);
+
+                                model.cache(true);
                             }
 
                         }, 2000);
