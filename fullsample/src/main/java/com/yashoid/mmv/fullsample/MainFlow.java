@@ -15,6 +15,11 @@ public interface MainFlow {
     class MainFlowType implements TypeProvider {
 
         @Override
+        public boolean isOfType(ModelFeatures features) {
+            return TYPE.equals(features.get(Basics.TYPE));
+        }
+
+        @Override
         public Action getAction(ModelFeatures features, String actionName, Object... params) {
             return null;
         }

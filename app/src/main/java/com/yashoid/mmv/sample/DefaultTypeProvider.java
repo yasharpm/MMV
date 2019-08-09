@@ -10,6 +10,11 @@ import java.util.List;
 public class DefaultTypeProvider implements TypeProvider {
 
     @Override
+    public boolean isOfType(ModelFeatures features) {
+        return true;
+    }
+
+    @Override
     public Action getAction(ModelFeatures features, String actionName, Object... params) {
         if (Action.ACTION_MODEL_CREATED.equals(actionName)) {
             return null;

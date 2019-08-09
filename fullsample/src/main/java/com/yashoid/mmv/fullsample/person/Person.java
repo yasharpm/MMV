@@ -20,11 +20,12 @@ public interface Person {
     class PersonType implements TypeProvider {
 
         @Override
-        public Action getAction(ModelFeatures features, String actionName, Object... params) {
-            if (!TYPE.equals(features.get(Basics.TYPE))) {
-                return null;
-            }
+        public boolean isOfType(ModelFeatures features) {
+            return TYPE.equals(features.get(Basics.TYPE));
+        }
 
+        @Override
+        public Action getAction(ModelFeatures features, String actionName, Object... params) {
             if (Action.ACTION_MODEL_CREATED.equals(actionName)) {
             }
 
@@ -37,10 +38,8 @@ public interface Person {
 
         @Override
         public void getIdentifyingFeatures(ModelFeatures features, List<String> identifyingFeatures) {
-            if (TYPE.equals(features.get(Basics.TYPE))) {
-                identifyingFeatures.add(Basics.TYPE);
-                identifyingFeatures.add(ID);
-            }
+            identifyingFeatures.add(Basics.TYPE);
+            identifyingFeatures.add(ID);
         }
 
         private Action mLoadedAction = new Action() {

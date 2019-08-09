@@ -29,11 +29,12 @@ public interface PersonList extends Stateful {
         private Action getList = new GetListAction();
 
         @Override
-        public Action getAction(ModelFeatures features, String actionName, Object... params) {
-            if (!TYPE.equals(features.get(Basics.TYPE))) {
-                return null;
-            }
+        public boolean isOfType(ModelFeatures features) {
+            return TYPE.equals(features.get(Basics.TYPE));
+        }
 
+        @Override
+        public Action getAction(ModelFeatures features, String actionName, Object... params) {
             switch (actionName) {
                 case Action.ACTION_MODEL_LOADED_FROM_CACHE:
                     return reloadedAction;
@@ -46,9 +47,7 @@ public interface PersonList extends Stateful {
 
         @Override
         public void getIdentifyingFeatures(ModelFeatures features, List<String> identifyingFeatures) {
-            if (TYPE.equals(features.get(Basics.TYPE))) {
-                identifyingFeatures.add(Basics.TYPE);
-            }
+            identifyingFeatures.add(Basics.TYPE);
         }
 
         private Action reloadedAction = new Action() {

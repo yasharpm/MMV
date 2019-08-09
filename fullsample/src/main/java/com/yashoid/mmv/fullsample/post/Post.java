@@ -19,16 +19,19 @@ public interface Post {
     class PostType implements TypeProvider {
 
         @Override
+        public boolean isOfType(ModelFeatures features) {
+            return TYPE.equals(features.get(Basics.TYPE));
+        }
+
+        @Override
         public Action getAction(ModelFeatures features, String actionName, Object... params) {
             return null;
         }
 
         @Override
         public void getIdentifyingFeatures(ModelFeatures features, List<String> identifyingFeatures) {
-            if (TYPE.equals(features.get(Basics.TYPE))) {
-                identifyingFeatures.add(Basics.TYPE);
-                identifyingFeatures.add(ID);
-            }
+            identifyingFeatures.add(Basics.TYPE);
+            identifyingFeatures.add(ID);
         }
 
     }

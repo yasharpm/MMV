@@ -113,6 +113,10 @@ public class Managers {
         List<Action> actions = new ArrayList<>();
 
         for (TypeProvider typeProvider: mTypeProviders) {
+            if (!typeProvider.isOfType(features)) {
+                continue;
+            }
+
             Action typeAction = typeProvider.getAction(features, actionName, params);
 
             if (typeAction != null) {
@@ -143,6 +147,10 @@ public class Managers {
         List<String> identifyingFeatures = new ArrayList<>();
 
         for (TypeProvider typeProvider: mTypeProviders) {
+            if (!typeProvider.isOfType(modelFeatures)) {
+                continue;
+            }
+
             typeProvider.getIdentifyingFeatures(modelFeatures, identifyingFeatures);
         }
 
