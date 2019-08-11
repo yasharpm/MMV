@@ -179,6 +179,7 @@ public class Managers {
             @Override
             public void onGetModelResult(ModelFeatures modelFeatures) {
                 if (modelFeatures == null) {
+                    model.perform(Action.ACTION_MODEL_NOT_EXISTED_IN_CACHE);
                     return;
                 }
 

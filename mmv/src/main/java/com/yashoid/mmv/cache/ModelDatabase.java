@@ -43,7 +43,7 @@ public class ModelDatabase implements ModelCacheColumns {
         db.insert(TABLE_NAME, null, cv);
     }
 
-    private String getColumnName(String identifier, SQLiteDatabase db) {
+    private synchronized String getColumnName(String identifier, SQLiteDatabase db) {
         String columnName = mColumnNameMap.getColumnName(identifier);
 
         if (columnName == null) {
@@ -107,9 +107,6 @@ public class ModelDatabase implements ModelCacheColumns {
     }
 
     protected HashMap<String, Object> queryModel(HashMap<String, String> identifiers) {
-        if ("3".equals(identifiers.get("id"))) {
-            Log.d("AAA", "About to get Ramin!");
-        }
         Cursor cursor = getCursor(identifiers);
 
         if (cursor == null) {
