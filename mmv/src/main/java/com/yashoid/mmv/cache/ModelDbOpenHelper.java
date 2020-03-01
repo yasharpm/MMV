@@ -4,8 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import androidx.annotation.Nullable;
-
 public class ModelDbOpenHelper extends SQLiteOpenHelper implements ModelCacheColumns {
 
     private static final String NAME = "com_yashoid_mmv_cache";
@@ -21,7 +19,7 @@ public class ModelDbOpenHelper extends SQLiteOpenHelper implements ModelCacheCol
         return mInstance;
     }
 
-    private ModelDbOpenHelper(@Nullable Context context) {
+    private ModelDbOpenHelper(Context context) {
         super(context, NAME, null, VERSION);
     }
 

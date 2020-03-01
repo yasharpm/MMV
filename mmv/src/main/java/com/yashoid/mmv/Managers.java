@@ -7,8 +7,12 @@ import com.yashoid.mmv.cache.GetModelCallback;
 import com.yashoid.mmv.cache.ModelCache;
 import com.yashoid.office.task.TaskManager;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Managers {
 
@@ -53,6 +57,8 @@ public class Managers {
     private List<ManagerInfo> mManagersInfo = new ArrayList<>();
 
     private List<TypeProvider> mTypeProviders = new ArrayList<>();
+
+    private Map<TypeProvider, Map<String, Action>> mActionCache = new HashMap<>();
 
     private ModelCache mModelCache = null;
 
@@ -125,6 +131,66 @@ public class Managers {
         }
 
         return actions;
+    }
+
+    private Action getAction(TypeProvider typeProvider, ModelFeatures features, String actionName, Object... params) {
+        Action action = typeProvider.getAction(features, actionName, params);
+
+        if (action != null) {
+            return action;
+        }
+
+        action = findCachedAction(typeProvider, actionName);
+
+        if (action != null) {
+            return action;
+        }
+
+        Method method = getActionMethod(typeProvider.getClass(), actionName);
+
+        if (method != null) {
+            action = new MethodAction(typeProvider, method);
+
+            cacheAction(typeProvider, actionName, action);
+
+            return action;
+        }
+
+        return null;
+    }
+
+    private Action findCachedAction(TypeProvider typeProvider, String actionName) {
+        Map<String, Action> actionMap = mActionCache.get(typeProvider);
+
+        if (actionMap != null) {
+            return actionMap.get(actionName);
+        }
+
+        return null;
+    }
+
+    private void cacheAction(TypeProvider typeProvider, String actionName, Action action) {
+        Map<String, Action> actionMap = mActionCache.get(typeProvider);
+
+        if (actionMap == null) {
+            actionMap = new HashMap<>();
+
+            mActionCache.put(typeProvider, actionMap);
+        }
+
+        actionMap.put(actionName, action);
+    }
+
+    private Method getActionMethod(Class clazz, String actionName) {
+        try {
+            return clazz.getMethod(actionName, Model.class, Object[].class);
+        } catch (NoSuchMethodException e) { }
+
+        if (!clazz.getSuperclass().equals(Object.class)) {
+            return getActionMethod(clazz.getSuperclass(), actionName);
+        }
+
+        return null;
     }
 
     protected TargetManager findTargetManager(ModelFeatures modelFeatures, TargetManager exception) {
@@ -232,6 +298,29 @@ public class Managers {
         protected ManagerInfo(ModelFeatures features, TargetManager manager) {
             modelFeatures = features;
             this.manager = manager;
+        }
+
+    }
+
+    private static class MethodAction implements Action {
+
+        private TypeProvider mTypeProvider;
+        private Method mMethod;
+
+        MethodAction(TypeProvider typeProvider, Method method) {
+            mTypeProvider = typeProvider;
+            mMethod = method;
+        }
+
+        @Override
+        public Object perform(Model model, Object... params) {
+            try {
+                return mMethod.invoke(mTypeProvider, model, params);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("TypeProvider action method must be public.", e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException("TypeProvider action method threw an exception.", e);
+            }
         }
 
     }

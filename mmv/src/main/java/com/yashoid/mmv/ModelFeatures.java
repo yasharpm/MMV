@@ -5,8 +5,6 @@ import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -132,7 +130,6 @@ public class ModelFeatures implements Parcelable {
         }
     }
 
-    @NonNull
     @Override
     public String toString() {
         return Arrays.toString(mFeatures.entrySet().toArray());
