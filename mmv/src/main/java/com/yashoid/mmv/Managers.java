@@ -123,7 +123,7 @@ public class Managers {
                 continue;
             }
 
-            Action typeAction = typeProvider.getAction(features, actionName, params);
+            Action typeAction = getAction(typeProvider, features, actionName, params);
 
             if (typeAction != null) {
                 actions.add(typeAction);
