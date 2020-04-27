@@ -43,16 +43,18 @@ public class ModelDatabase implements ModelCacheColumns {
         db.insert(TABLE_NAME, null, cv);
     }
 
-    private synchronized String getColumnName(String identifier, SQLiteDatabase db) {
-        String columnName = mColumnNameMap.getColumnName(identifier);
+    private String getColumnName(String identifier, SQLiteDatabase db) {
+        synchronized (ModelDatabase.class) {
+            String columnName = mColumnNameMap.getColumnName(identifier);
 
-        if (columnName == null) {
-            columnName = mColumnNameMap.defineNewColumn(identifier);
+            if (columnName == null) {
+                columnName = mColumnNameMap.defineNewColumn(identifier);
 
-            addColumn(columnName, db);
+                addColumn(columnName, db);
+            }
+
+            return columnName;
         }
-
-        return columnName;
     }
 
     private void addColumn(String columnName, SQLiteDatabase db) {
